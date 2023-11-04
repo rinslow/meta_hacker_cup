@@ -145,5 +145,5 @@ def main(_in, _out):
 
 
 if __name__ == '__main__':
-    with open('../input.txt', 'rt') as _in, open('../output.txt', 'wt') as _out:
+    with open('../../input.txt', 'rt') as _in, open('../../output.txt', 'wt') as _out:
         main(_in=_in, _out=_out)
