@@ -40,10 +40,11 @@ class Case:
         return hash((self.r, self.c, self.m))
 
 
+# Returns a generator of Case objects from the format Meta gives input to the challenge
 def cases_from_input(_in):
-    cases = _in.readline()
-    for _ in range(int(cases)):
-        r, c = map(int, _in.readline().split())
+    n = _in.readline()  # input starts with amount of cases in a single line
+    for _ in range(int(n)):
+        r, c = map(int, _in.readline().split())  # then dimensions of first case in a single line
         m = ''
         for _ in range(r):
             _in_line = _in.readline().rstrip()  # remove \n
@@ -92,12 +93,6 @@ def lonely_trees(case: Case):
     return ((r, c) for r, c in cells_r_c(case) if is_lonely_tree(case, r, c))
 
 
-def mutate(case: Case, r: int, c: int, v: str) -> Case:
-    i = r * case.r + c
-    m = case.m[:i] + v + case.m[i + 1:]
-    return dataclasses.replace(case, m=m)
-
-
 def solution(case: Case) -> Optional[Matrix]:
     if not any_lonely_tree(case):
         return case.m  # Solution found
@@ -112,12 +107,13 @@ def solution(case: Case) -> Optional[Matrix]:
         if not lonely_trees_in_candidate:
             return candidate_case.m  # Solution found!
 
-        transposition_set.add(candidate_case.m)
+        # Note that initial position cannot be reached via transposition, so no point in adding it to the set.
+        # If that assumption changes, un-comment this line.
+        # transposition_set.add(candidate_case.m)
 
-        # Assertion: there is at least one lonely tree
         for r, c in lonely_trees_in_candidate:
             for nr, nc in neighbors(candidate_case, r, c):
-                if tree(candidate_case, nr, nc):
+                if not empty(candidate_case, nr, nc):
                     continue  # Nothing to mutate
 
                 new_case = candidate_case.mutate(nr, nc, TREE)
@@ -145,5 +141,5 @@ def main(_in, _out):
 
 
 if __name__ == '__main__':
-    with open('../../input.txt', 'rt') as _in, open('../../output.txt', 'wt') as _out:
+    with open('../../../input.txt', 'rt') as _in, open('../../../output.txt', 'wt') as _out:
         main(_in=_in, _out=_out)
